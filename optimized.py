@@ -9,10 +9,9 @@ with open('data_base/dataset3_Python+P7.csv', newline='') as file:
     data = csv.reader(file)
     for action in data:
         if action[1] != 'price' and action[2] != 'profit':
-            """action[1] = int(float(action[1]) * 100)
-            action[2] = int(float(action[2]) * 100)"""
+
             action[1] = int(float(action[1]))
-            action[2] = int(float(action[2])*100)
+            action[2] = action[1] * float(action[2])
             list_action.append(list(action))
 
 """list_action = sorted(
@@ -29,7 +28,9 @@ def sacADos_dynamique(capacity, list_action):
     for i in range(1, len(list_action) + 1):
         for w in range(1, capacity + 1):
             if list_action[i-1][1] <= w:
-                matrice[i][w] = max(list_action[i-1][2] + matrice[i-1][w-list_action[i-1][1]], matrice[i-1][w])
+                matrice[i][w] = max(
+                    list_action[i-1][2] + matrice[i-1][w-list_action[i-1][1]],
+                    matrice[i-1][w])
             else:
                 matrice[i][w] = matrice[i-1][w]
 
@@ -53,4 +54,4 @@ results = sacADos_dynamique(capacity, list_action)
 for profit in results[1]:
     print(profit)
     som += profit[2]
-print(f"Bénéfice :{results[0]}")
+print(f"Bénéfice :{som}")
