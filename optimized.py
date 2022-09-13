@@ -1,7 +1,7 @@
 import csv
 import sys
 
-sys.setrecursionlimit(1050)
+# sys.setrecursionlimit(1050)
 som = 0
 list_action = []
 capacity = 500
@@ -16,13 +16,10 @@ with open('data_base/dataset3_Python+P7.csv', newline='') as file:
 
 """list_action = sorted(
     list_action, key=lambda x: x[1], reverse=False)"""
-
-"""for line in list_action:
-    print(line)"""
-
-
+"""for i in list_action:
+    print(i)"""
 # Solution optimale - programmation dynamique
-def sacADos_dynamique(capacity, list_action):
+def dynamique(capacity, list_action):
     matrice = [[0 for x in range(capacity + 1)] for x in range(len(list_action) + 1)]
 
     for i in range(1, len(list_action) + 1):
@@ -31,6 +28,7 @@ def sacADos_dynamique(capacity, list_action):
                 matrice[i][w] = max(
                     list_action[i-1][2] + matrice[i-1][w-list_action[i-1][1]],
                     matrice[i-1][w])
+
             else:
                 matrice[i][w] = matrice[i-1][w]
 
@@ -50,7 +48,7 @@ def sacADos_dynamique(capacity, list_action):
     return matrice[-1][-1], elements_selection
 
 
-results = sacADos_dynamique(capacity, list_action)
+results = dynamique(capacity, list_action)
 for profit in results[1]:
     print(profit)
     som += profit[2]

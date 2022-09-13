@@ -3,7 +3,7 @@ __pycache__/
 # data_base/
 *.py[cod]
 *$py.class
-
+dossier/
 # C extensions
 *.so
 
