@@ -29,5 +29,7 @@ def bruteforce(actions):
 
 
 result = bruteforce(list_action)
-print(result)
-print(sum([i[2]for i in result]))
+for item in result:
+    print(item)
+print("{:.2f}".format(sum([i[2]for i in result])))
+print("{:.2f}".format(sum([i[1]for i in result])))

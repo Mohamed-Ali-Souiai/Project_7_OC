@@ -1,55 +1,76 @@
 import csv
-import sys
 
-# sys.setrecursionlimit(1050)
-som = 0
-list_action = []
+
+sum_profit = 0
+sum_price = 0
 capacity = 500
-with open('data_base/dataset3_Python+P7.csv', newline='') as file:
-    data = csv.reader(file)
-    for action in data:
-        if action[1] != 'price' and action[2] != 'profit':
+all_actions = []
+data_base = 'data_base/dataset1_Python+P7.csv'
+def extract_csv_data(data):
 
-            action[1] = int(float(action[1]))
-            action[2] = action[1] * float(action[2])
-            list_action.append(list(action))
-
-"""list_action = sorted(
-    list_action, key=lambda x: x[1], reverse=False)"""
-"""for i in list_action:
-    print(i)"""
-# Solution optimale - programmation dynamique
-def dynamique(capacity, list_action):
-    matrice = [[0 for x in range(capacity + 1)] for x in range(len(list_action) + 1)]
-
-    for i in range(1, len(list_action) + 1):
-        for w in range(1, capacity + 1):
-            if list_action[i-1][1] <= w:
-                matrice[i][w] = max(
-                    list_action[i-1][2] + matrice[i-1][w-list_action[i-1][1]],
-                    matrice[i-1][w])
-
+    with open(data) as file:
+        actions = csv.reader(file, delimiter=',')
+        next(file)       # ignor first line
+        list_action = []
+        for action in actions:
+            if float(action[1]) <= 0 or float(action[2]) <= 0:
+                pass
             else:
-                matrice[i][w] = matrice[i-1][w]
+                take = (
+                    action[0],
+                    int(float(action[1])*100),
+                    float(action[1]) * float(action[2])
+                )
+                list_action.append(take)
+
+        return list_action
+ 
+ 
+def knapsack(capacity, price, profit, length):
+    K = [[0 for x in range(capacity + 1)] for x in range(length + 1)]
+ 
+    # Build table K[][] in bottom up manner
+    for i in range(length + 1):
+        for w in range(capacity + 1):
+            if i == 0 or w == 0:
+                K[i][w] = 0
+            elif price[i-1] <= w:
+                K[i][w] = max(profit[i-1]
+                          + K[i-1][w-price[i-1]], 
+                              K[i-1][w])
+            else:
+                K[i][w] = K[i-1][w]
 
     # Retrouver les éléments en fonction de la somme
-    w = capacity
-    n = len(list_action)
+    
+    #list_action = all_actions
     elements_selection = []
 
-    while w >= 0 and n >= 0:
-        e = list_action[n-1]
-        if matrice[n][w] == matrice[n-1][w-e[1]] + e[2]:
+    while capacity >= 0 and length >= 0:
+        e = all_actions[length-1]
+        if K[length][capacity] == K[length-1][capacity-e[1]] + e[2]:
             elements_selection.append(e)
-            w -= e[1]
+            capacity -= e[1]
 
-        n -= 1
+        length -= 1
 
-    return matrice[-1][-1], elements_selection
+    return K[-1][-1]/100, elements_selection
+ 
+ 
+def part():
+    all_actions = extract_csv_data(data_base)
+    price = []
+    profit = []
+    for action in all_actions:
+        price.append(action[1])
+        profit.append(action[2])
+    return price,profit,all_actions
 
+price, profit, all_actions = part()
 
-results = dynamique(capacity, list_action)
+results = knapsack(100*capacity, price, profit, len(profit))
 for profit in results[1]:
     print(profit)
-    som += profit[2]
-print(f"Bénéfice :{som}")
+    sum_profit += profit[2]
+    sum_price += profit[1]
+print(f"profit :{sum_profit/100 :.2f} \nprice :{sum_price/100 :.2f}")
