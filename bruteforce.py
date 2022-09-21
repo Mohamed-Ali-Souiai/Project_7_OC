@@ -5,14 +5,27 @@ from itertools import combinations
 # sys.setrecursionlimit(1050)
 som = 0
 list_action = []
-capacity = 500
-with open('data_base/dataset3_Python+P7.csv', newline='') as file:
-    data = csv.reader(file)
-    for action in data:
-        if action[1] != 'price' and action[2] != 'profit':
-            action[1] = float(action[1])
-            action[2] = action[1] * float(action[2])
-            list_action.append(list(action))
+capacity = 50000
+database = 'data_base/dataset1_Python+P7.csv'
+
+def extract_csv_data(data):
+
+    with open(data) as file:
+        actions = csv.reader(file, delimiter=',')
+        next(file)       # ignor first line
+        actions_taken = []
+        for action in actions:
+            if float(action[1]) <= 0 or float(action[2]) <= 0:
+                pass
+            else:
+                take = (
+                    action[0],
+                    int(float(action[1])*100),
+                    float(action[1]) * float(action[2])
+                )
+                actions_taken.append(take)
+
+        return actions_taken
 
 
 def bruteforce(actions):
@@ -27,9 +40,13 @@ def bruteforce(actions):
                     selected_item = item
     return selected_item
 
-
+list_action= extract_csv_data(database)
+"""for item in list_action:
+    print(item)
+input('pause')"""
 result = bruteforce(list_action)
+print(len(result))
 for item in result:
     print(item)
 print("{:.2f}".format(sum([i[2]for i in result])))
-print("{:.2f}".format(sum([i[1]for i in result])))
+print("{:.2f}".format(sum([i[1]for i in result])/100))
