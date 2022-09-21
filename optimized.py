@@ -73,4 +73,8 @@ for profit in results[1]:
     print(profit)
     sum_profit += profit[2]
     sum_price += profit[1]
-print(f"profit :{sum_profit/100 :.2f} \nprice :{sum_price/100 :.2f}")
+
+if data_base == 'data_base/dataset3_Python+P7.csv':
+    print(f"profit :{sum_profit :.2f} \nprice :{sum_price/100 :.2f}")
+else:
+    print(f"profit :{sum_profit/100 :.2f} \nprice :{sum_price/100 :.2f}")
